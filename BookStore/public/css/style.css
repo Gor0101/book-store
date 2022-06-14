@@ -1,0 +1,8 @@
+a:hover{
+    color: #28a745 !important;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.green {
+    color: #28a745 !important;
+}
