@@ -27,8 +27,8 @@ class BookCreateRequest extends FormRequest
             'bookName' => 'required|min:3|max:8',
             'price' => 'required|max:10',
             'textArea' => 'max:300',
-            'bookAvatar' => 'required|mimes:png,jpg|max:5000',
-            'bookFile' => 'required|mimes:pdf|max:5000',
+            'bookAvatar' => 'required|mimes:png,jpg|max:7000',
+            'bookFile' => 'required|mimes:pdf|max:10000',
         ];
     }
 

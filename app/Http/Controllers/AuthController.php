@@ -134,8 +134,6 @@ class AuthController extends Controller
             Auth::loginUsingId($getLoggedUser->id);
             return redirect(route('index'));
         }else{
-//            $image_git = Storage::putFile($user->avatar,'private');
-//            $user_git = Str::replaceFirst('public', 'storage', $image_git);
             $userGitData = [
                 'name' => $user->name,
                 'last_name' => $user->nickname,

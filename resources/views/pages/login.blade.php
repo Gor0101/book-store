@@ -52,7 +52,7 @@
                                 </div>
                             </form>
                             <br>
-                            <a href="{{ route('RegistrationUserPage') }}">Registration here</a>
+                            <a href="{{ route('RegistrationUserPage') }}">Login here</a>
                         </div>
                     </div>
                 </div>

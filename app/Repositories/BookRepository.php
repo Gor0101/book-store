@@ -32,4 +32,9 @@ class BookRepository implements BookRepositoryContract
         return $this->book::where('id',$id)->first();
     }
 
+    public function destroy($id)
+    {
+        return $this->book::where('user_id',$id)->delete();
+    }
+
 }
