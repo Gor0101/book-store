@@ -47,6 +47,13 @@
                                           <span class="txt">Buy in one click</span>
                             </span>
                             </a>
+                        @elseif($book->user_id == Auth::id())
+                            <div class="h-bg">
+                                <div class="h-bg-inner bg-dark"></div>
+                            </div>
+                            <a class="cart">
+                                <span class="price">Your book</span>
+                            </a>
                         @endif
                     </div>
                 </div>

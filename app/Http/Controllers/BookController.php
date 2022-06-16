@@ -25,12 +25,17 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = $this->bookRepositoryContract->getAllBooks();
-        return view('pages.books',compact('books'));
+        if(!$request->input('search')){
+            $search = null;
+        } else {
+            $search = $request->input('search');
+        }
+        $books = $this->bookRepositoryContract->getAllBooks($search);
+        return view('pages.books',['books'=>$books, 'search'=>$search]);
     }
 
     /**

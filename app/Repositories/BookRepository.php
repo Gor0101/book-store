@@ -22,9 +22,9 @@ class BookRepository implements BookRepositoryContract
         return $this->book::create($data);
     }
 
-    public function getAllBooks()
+    public function getAllBooks($search)
     {
-        return $this->book::select()->with(['user','genre','payment'])->paginate(4);
+        return $this->book::when($search, fn($query)=> $query->where('name', 'like', '%' . $search . '%'))->with(['user','genre','payment'])->paginate(4);
     }
 
     public function getOneBook($id)
