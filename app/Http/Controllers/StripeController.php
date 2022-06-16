@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Contracts\BookRepositoryContract;
 use App\Contracts\PaymentRepositoryContract;
 use App\Models\Book;
+use Illuminate\Support\Facades\Auth;
 use Session;
 use Stripe;
 
@@ -39,7 +40,7 @@ class StripeController extends Controller
         ]);
 
         $data = [
-            'user_id' => $book->user_id,
+            'user_id' => Auth::id(),
             'book_id' => $book->id,
             'amount' => $book->price,
             'payable_type' => Book::class,
