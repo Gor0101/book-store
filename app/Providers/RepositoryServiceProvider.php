@@ -7,11 +7,15 @@ use App\Contracts\GenreRepositoryContract;
 use App\Contracts\PaymentRepositoryContract;
 use App\Contracts\RoleRepositoryContract;
 use App\Contracts\RoleUserRepositoryContract;
+use App\Contracts\PlanRepositoryContract;
+use App\Contracts\SubscriptionRepositoryContract;
 use App\Repositories\BookRepository;
 use App\Repositories\GenreRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\RoleUserRepository;
+use App\Repositories\PlanRepository;
+use App\Repositories\SubscriptionRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\UserRepository;
 use App\Contracts\UserRepositoryContract;
@@ -63,6 +67,16 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->singleton(
             PaymentRepositoryContract::class,
             PaymentRepository::class
+        );
+
+        $this->app->singleton(
+            PlanRepositoryContract::class,
+            PlanRepository::class
+        );
+
+        $this->app->singleton(
+            SubscriptionRepositoryContract::class,
+            SubscriptionRepository::class
         );
     }
 }

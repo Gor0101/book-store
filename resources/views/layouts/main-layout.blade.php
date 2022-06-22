@@ -53,7 +53,7 @@
                 </li>
             @auth
                 @foreach(Auth::user()->roles as $role)
-                    @if($role->name == "buyer")
+                    @if($role->name == "seller")
                             <li class="nav-item">
                             <a class="nav-link {{ Route::is('book.create') ? 'green' : '' }}" href="{{ route('book.create') }}">Add Book</a>
                             </li>

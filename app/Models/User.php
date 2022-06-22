@@ -39,7 +39,8 @@ class User extends Authenticatable
 
 
     protected $with = [
-        'roles'
+        'roles',
+        'subscriptions'
     ];
 
 
@@ -67,4 +68,8 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }

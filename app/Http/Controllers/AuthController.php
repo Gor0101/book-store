@@ -32,12 +32,12 @@ class AuthController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function RegistrationUserPage()
+    public function registrationUserPage()
     {
         return view('pages.registration');
     }
 
-    public function UserProfilePage($id)
+    public function userProfilePage($id)
     {
         $user = $this->userRepositoryContract->getOneUser(['id' => $id]);
         return view('pages.profile',compact('user'));
@@ -47,7 +47,7 @@ class AuthController extends Controller
      * @param UserRegistrationRequest $userRegistrationRequest
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function RegistrationUserSubmit(UserRegistrationRequest $userRegistrationRequest)
+    public function registrationUserSubmit(UserRegistrationRequest $userRegistrationRequest)
     {
         $image = Storage::putFile('public/profileImages', $userRegistrationRequest->file('profileImage'),'private');
         $user_avatar = Str::replaceFirst('public', 'storage', $image);
@@ -74,7 +74,7 @@ class AuthController extends Controller
      * @param UserLoginRequest $userLoginRequest
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
      */
-    public function LoginUserSubmit(UserLoginRequest $userLoginRequest)
+    public function loginUserSubmit(UserLoginRequest $userLoginRequest)
     {
         $email = $userLoginRequest->input('email');
         $password = $userLoginRequest->input('password');
@@ -89,7 +89,7 @@ class AuthController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function LoginUserPage()
+    public function loginUserPage()
     {
         return view('pages.login');
     }
@@ -114,7 +114,7 @@ class AuthController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function Logout()
+    public function logout()
     {
         Auth::logout();
         return redirect(route('LoginUserPage'));

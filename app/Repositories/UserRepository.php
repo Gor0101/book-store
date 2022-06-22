@@ -19,7 +19,7 @@ class UserRepository implements UserRepositoryContract
      * @param $data
      * @return mixed
      */
-    public function UserRegistrationStore($data): mixed
+    public function userRegistrationStore($data): mixed
     {
         $user = $this->user::create($data);
         return $user->assignRole('user','buyer');
@@ -49,7 +49,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function getOneUser($id)
     {
-        return $this->user::where('id',$id)->with('roles')->first();
+        return $this->user::where('id',$id)->with('roles','subscriptions')->first();
     }
 
     /**

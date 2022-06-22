@@ -4,7 +4,7 @@ namespace App\Contracts;
 
 interface UserRepositoryContract
 {
-    public function UserRegistrationStore($data);
+    public function userRegistrationStore($data);
     public function emailCheck($email);
     public function updateEmailVerifiedColumn($id);
     public function getOneUser($id);
