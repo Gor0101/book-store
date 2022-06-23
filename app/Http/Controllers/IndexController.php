@@ -21,7 +21,7 @@ class IndexController extends Controller
 
     public function index()
     {
-        $user = $this->userRepositoryContract->getOneUser(Auth::id());
+        $user = $this->userRepositoryContract->getOneUser(['id' => Auth::id()]);
         $plans = $this->planRepositoryContract->getAllPlans();
         return view('pages.index',compact('plans','user'));
     }

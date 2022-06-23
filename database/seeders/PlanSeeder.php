@@ -19,6 +19,7 @@ class PlanSeeder extends Seeder
         $stripe = new \Stripe\StripeClient(
             'sk_test_51L8jHaAcc1mBcc9SQyBW6iMyKmSV8mX0u0NcHWrROifm4Smvv4kJV3JIgwBNvVhIwnSnyN8oktEJrnGvpQ8HlqFd00MVj0wXbs'
         );
+
         $standard =  $stripe->products->create([
             'name' => 'Standard',
         ]);
@@ -41,23 +42,22 @@ class PlanSeeder extends Seeder
             'product' => $premium->id,
         ]);
 
+            DB::table('plans')->insert([
 
-        DB::table('plans')->insert([
-
-        [
-            'name' => 'Standard',
-            'price' => 10,
-            'period' => 'monthly',
-            'limit' => 5,
-            'plan_id' => $standard_plan->id,
-        ],
             [
-                'name' => 'Premium',
-                'price' => 25,
+                'name' => 'Standard',
+                'price' => 10,
                 'period' => 'monthly',
-                'limit' => 15,
-                'plan_id' => $premium_plan->id,
+                'limit' => 5,
+                'plan_id' => $standard_plan->id,
             ],
-        ]);
+                [
+                    'name' => 'Premium',
+                    'price' => 25,
+                    'period' => 'monthly',
+                    'limit' => 15,
+                    'plan_id' => $premium_plan->id,
+                ],
+            ]);
     }
 }

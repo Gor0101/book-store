@@ -17,9 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('user_id');
             $table->string('stripe_plan');
-            $table->dateTime('period_end');
+            $table->date('period_end');
             $table->string('status');
+            $table->string('sub_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

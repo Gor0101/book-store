@@ -15,8 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('SubEndCheck:cron')
-            ->everyMinute();
+        $schedule->command('SubEndCheck:cron')->dailyAt('00:00');
     }
 
     /**

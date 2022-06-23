@@ -22,7 +22,6 @@
 
                     @foreach($book->payment as $payment)
 
-{{--@dd(Auth::id(),$payment->user_id)--}}
                         @if($payment->payable_status == "succeeded" && $book->id == $payment->book_id && Auth::id() == $payment->user_id)
                                 <div class="text-center">
                                     <a class="btn btn-success" href="{{route('download', $book->book_pdf)}}">

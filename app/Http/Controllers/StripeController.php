@@ -75,14 +75,22 @@ class StripeController extends Controller
         return redirect(route('index'));
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function index()
     {
         return view('pages.subscribe');
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws Stripe\Exception\ApiErrorException
+     */
     public function store(Request $request, $id)
     {
-
         $plan = $this->planRepositoryContract->getOnePLan($id);
 
         $stripe = new \Stripe\StripeClient(
@@ -90,7 +98,6 @@ class StripeController extends Controller
         );
 
         $token = $stripe->tokens->retrieve($request->stripeToken);
-
 
         $price = $stripe->prices->retrieve($plan->plan_id);
 
@@ -118,6 +125,7 @@ class StripeController extends Controller
             'stripe_plan' => $plan->id,
             'period_end' => $date,
             'status' => $subscription->status,
+            'sub_id' => $subscription->id,
 
         ];
 

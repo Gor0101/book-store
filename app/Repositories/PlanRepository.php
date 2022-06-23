@@ -23,6 +23,10 @@ class PlanRepository implements PlanRepositoryContract
         return $this->plan::all();
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getOnePLan($id)
     {
         return $this->plan::where('id',$id)->first();

@@ -118,4 +118,5 @@ class BookController extends Controller
     {
         return $this->bookRepositoryContract->destroy($id);
     }
+
 }

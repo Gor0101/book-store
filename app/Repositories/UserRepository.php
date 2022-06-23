@@ -47,9 +47,9 @@ class UserRepository implements UserRepositoryContract
      * @param $id
      * @return mixed
      */
-    public function getOneUser($id)
+    public function getOneUser($params)
     {
-        return $this->user::where('id',$id)->with('roles','subscriptions')->first();
+        return $this->user::where($params)->with('roles','subscriptions')->first();
     }
 
     /**
