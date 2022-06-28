@@ -40,7 +40,8 @@ class User extends Authenticatable
 
     protected $with = [
         'roles',
-        'subscriptions'
+        'subscriptions',
+        'books',
     ];
 
 
@@ -72,4 +73,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Subscription::class);
     }
+
 }

@@ -16,7 +16,10 @@ class BookRepository implements BookRepositoryContract
         $this->book = $book;
     }
 
-
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function store($data)
     {
         return $this->book::create($data);
@@ -24,14 +27,25 @@ class BookRepository implements BookRepositoryContract
 
     public function getAllBooks($search)
     {
-        return $this->book::when($search, fn($query)=> $query->where('name', 'like', '%' . $search . '%'))->with(['user','genre','payment'])->paginate(4);
+        return $this->book::when($search, fn($query)=>
+        $query->where('name', 'like', '%' . $search . '%'))
+            ->with(['user','genre','payment'])
+            ->paginate(4);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getOneBook($id)
     {
         return $this->book::where('id',$id)->first();
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
         return $this->book::where('user_id',$id)->delete();

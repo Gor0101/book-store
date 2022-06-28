@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('payable_type');
             $table->string('payable_status');
             $table->string('payable_id');
+            $table->string('refund_id')->nullable();
             $table->timestamps();
         });
     }

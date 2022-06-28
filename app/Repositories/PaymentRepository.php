@@ -15,9 +15,18 @@ class PaymentRepository implements PaymentRepositoryContract
         $this->payment = $payment;
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function store($data)
     {
         return $this->payment::create($data);
+    }
+
+    public function getPayment($params)
+    {
+        return $this->payment::where($params)->first();
     }
 
 }

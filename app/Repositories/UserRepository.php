@@ -49,7 +49,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function getOneUser($params)
     {
-        return $this->user::where($params)->with('roles','subscriptions')->first();
+        return $this->user::where($params)->with('roles','subscriptions','payments')->first();
     }
 
     /**
@@ -75,7 +75,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function getOneUserByOauth($params = [])
     {
-        return $this->user::select('id')->where($params)->first();
+        return $this->user::select('id')->where($params)->with('roles','subscriptions','payments')->first();
     }
 
     /**

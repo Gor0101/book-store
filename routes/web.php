@@ -49,10 +49,12 @@ Route::group(['middleware' => ['role:admin']], function () {
 Route::resource('book', BookController::class);
 
 Route::group(['middleware' => ['auth']], function() {
-Route::get('/stripe/{id}', [StripeController::class, 'stripe'])->name('stripe');
-Route::post('/stripe/{id}', [StripeController::class, 'stripePost'])->name('stripe.post');
-Route::get('/subscribe',[StripeController::class, 'index']);
-Route::post('/subscribe/{id}',[StripeController::class, 'store']);
+    Route::get('/stripe/{id}', [StripeController::class, 'stripe'])->name('stripe');
+    Route::post('/stripe/{id}', [StripeController::class, 'stripePost'])->name('stripe.post');
+    Route::get('/subscribe',[StripeController::class, 'index']);
+    Route::post('/subscribe/{id}',[StripeController::class, 'store']);
+    Route::get('/refund/{id}',[StripeController::class, 'refundPayment']);
+    Route::get('/subscribe/refund/{id}',[StripeController::class, 'refundSubscription']);
 });
 
 Route::get('{file}', [DownloadController::class, 'download'])->name('download');

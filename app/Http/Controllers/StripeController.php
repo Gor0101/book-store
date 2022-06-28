@@ -6,7 +6,9 @@ use App\Contracts\BookRepositoryContract;
 use App\Contracts\PaymentRepositoryContract;
 use App\Contracts\PlanRepositoryContract;
 use App\Contracts\SubscriptionRepositoryContract;
+use App\Contracts\UserRepositoryContract;
 use App\Models\Book;
+use App\Models\Payment;
 use App\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -22,13 +24,15 @@ class StripeController extends Controller
     protected PaymentRepositoryContract $paymentRepositoryContract;
     protected PlanRepositoryContract $planRepositoryContract;
     protected SubscriptionRepositoryContract $subscriptionRepositoryContract;
+    protected UserRepositoryContract $userRepositoryContract;
 
-    public function __construct(BookRepositoryContract $bookRepositoryContract, PaymentRepositoryContract $paymentRepositoryContract, PlanRepositoryContract $planRepositoryContract, SubscriptionRepositoryContract $subscriptionRepositoryContract)
+    public function __construct(BookRepositoryContract $bookRepositoryContract, PaymentRepositoryContract $paymentRepositoryContract, PlanRepositoryContract $planRepositoryContract, SubscriptionRepositoryContract $subscriptionRepositoryContract, UserRepositoryContract $userRepositoryContract)
     {
         $this->bookRepositoryContract = $bookRepositoryContract;
         $this->paymentRepositoryContract = $paymentRepositoryContract;
         $this->planRepositoryContract = $planRepositoryContract;
         $this->subscriptionRepositoryContract = $subscriptionRepositoryContract;
+        $this->userRepositoryContract = $userRepositoryContract;
     }
 
     /**
@@ -134,6 +138,52 @@ class StripeController extends Controller
         auth()->user()->assignRole('seller');
 
         return redirect()->back();
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|void
+     * @throws Stripe\Exception\ApiErrorException
+     */
+    public function refundPayment($id)
+    {
+        $stripe = new \Stripe\StripeClient(
+            'sk_test_51L8jHaAcc1mBcc9SQyBW6iMyKmSV8mX0u0NcHWrROifm4Smvv4kJV3JIgwBNvVhIwnSnyN8oktEJrnGvpQ8HlqFd00MVj0wXbs'
+        );
+        $userPayment = $this->paymentRepositoryContract->getPayment(['id' => $id]);
+        $refund = $stripe->refunds->create([
+            'charge' => $userPayment->payable_id,
+        ]);
+
+        if ($refund->status == "succeeded") {
+            Payment::where('user_id', Auth::id())->update(['refund_id' => $refund->id]);
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|void
+     * @throws Stripe\Exception\ApiErrorException
+     */
+    public function refundSubscription($id)
+    {
+        $date = Carbon::now();
+        $stripe = new \Stripe\StripeClient(
+            'sk_test_51L8jHaAcc1mBcc9SQyBW6iMyKmSV8mX0u0NcHWrROifm4Smvv4kJV3JIgwBNvVhIwnSnyN8oktEJrnGvpQ8HlqFd00MVj0wXbs'
+        );
+
+        $sub = $this->subscriptionRepositoryContract->getSub(['id' => $id]);
+        $user = $this->userRepositoryContract->getOneUser(['id' => Auth::id()]);
+        $stripe->subscriptions->cancel(
+            $sub->sub_id
+        );
+        if ($sub->status == "active") {
+            Subscription::where('user_id', Auth::id())->update(['cancel_at_period_end' => $date->toDateString()]);
+            $user->removeRole('seller');
+            $this->subscriptionRepositoryContract->deleteSubscription(['id' => $id]);
+            return redirect()->back();
+        }
     }
 
 }

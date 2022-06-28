@@ -15,9 +15,31 @@ class SubscriptionRepository implements SubscriptionRepositoryContract
         $this->subscription = $subscription;
     }
 
+    /**
+     * @param $subData
+     * @return mixed
+     */
     public function store($subData)
     {
         return $this->subscription::create($subData);
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function getSub($params)
+    {
+        return $this->subscription::where($params)->with('plan')->first();
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function deleteSubscription($params)
+    {
+        return $this->subscription::where($params)->delete() ;
     }
 
 }

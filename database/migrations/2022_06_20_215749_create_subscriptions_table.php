@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('period_end');
             $table->string('status');
             $table->string('sub_id');
+            $table->date('cancel_at_period_end')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
