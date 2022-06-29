@@ -19,9 +19,7 @@
                     </div>
                     <div class="box-down">
                         @if(!($book->payment->isEmpty()))
-
                             @foreach($book->payment as $payment)
-{{--                                @dd($payment->refund_id == "")--}}
 
                                 @if($payment->payable_status == "succeeded" && $book->id == $payment->book_id && Auth::id() == $payment->user_id && is_null($payment->refund_id))
                                     <div class="text-center">
@@ -41,6 +39,7 @@
                                     </div>
                                 @endif
                             @endforeach
+                        @endif
                         @if($book->user_id != Auth::id() && !is_null($payment->refund_id))
                             <div class="h-bg">
                                 <div class="h-bg-inner bg-dark"></div>
@@ -59,10 +58,8 @@
                                 <span class="price">Your book</span>
                             </a>
                             @endif
-                        @endif
                     </div>
                 </div>
-
             @endforeach
         </div>
     </div>

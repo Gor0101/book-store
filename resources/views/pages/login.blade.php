@@ -24,7 +24,7 @@
                                     <div class="col-md-6 mb-4 pb-2">
 
                                         <div class="form-outline">
-                                            <input type="email" id="emailAddress" name="email" placeholder="Email" class="form-control form-control-lg" />
+                                            <input type="email" id="emailAddress" name="email" placeholder="Email" class="form-control form-control-lg {{ $errors->first('email') ? 'border-danger' : ''}}" value="{{old('email')}}"/>
                                             <label class="form-label" for="emailAddress">{{$errors->first('email')}}</label>
                                         </div>
 
@@ -32,8 +32,8 @@
                                     <div class="col-md-6 mb-4 pb-2">
 
                                         <div class="form-outline">
-                                            <input type="password" id="exampleInputPassword1" name="password" placeholder="Password" class="form-control form-control-lg" />
-                                            <label class="form-label" for="exampleInputPassword1">{{$errors->first('email')}}</label>
+                                            <input type="password" id="exampleInputPassword1" name="password" placeholder="Password" class="form-control form-control-lg {{ $errors->first('password') ? 'border-danger' : ''}}" />
+                                            <label class="form-label" for="exampleInputPassword1">{{$errors->first('password')}}</label>
                                         </div>
 
 

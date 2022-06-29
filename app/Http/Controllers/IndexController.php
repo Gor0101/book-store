@@ -19,6 +19,9 @@ class IndexController extends Controller
         $this->userRepositoryContract = $userRepositoryContract;
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function index()
     {
         $user = $this->userRepositoryContract->getOneUser(['id' => Auth::id()]);

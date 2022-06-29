@@ -27,7 +27,7 @@
                                 <div class="col-md-6 mb-4">
 
                                     <div class="form-outline">
-                                        <input type="text" id="firstName" name="name" placeholder="First Name" class="form-control form-control-lg {{ $errors->first('name') ? 'border-danger' : ''}}" />
+                                        <input type="text" id="firstName" name="name" placeholder="First Name" class="form-control form-control-lg {{ $errors->first('name') ? 'border-danger' : ''}}" value="{{old('name')}}"/>
                                         <label class="form-label" for="firstName">{{ $errors->first('name') }}</label>
                                     </div>
 
@@ -35,7 +35,7 @@
                                 <div class="col-md-6 mb-4">
 
                                     <div class="form-outline">
-                                        <input type="text" id="lastName" name="lastName" placeholder="Last Name" class="form-control form-control-lg {{ $errors->first('lastName') ? 'border-danger' : ''}}" />
+                                        <input type="text" id="lastName" name="lastName" placeholder="Last Name" class="form-control form-control-lg {{ $errors->first('lastName') ? 'border-danger' : ''}}" value="{{old('lastName')}}"/>
                                         <label class="form-label" for="lastName">{{ $errors->first('lastName') }}</label>
                                     </div>
 
@@ -46,7 +46,7 @@
                                 <div class="col-md-6 mb-4 pb-2">
 
                                     <div class="form-outline">
-                                        <input type="email" id="emailAddress" name="email" placeholder="Email" class="form-control form-control-lg {{ $errors->first('email') ? 'border-danger' : ''}}" />
+                                        <input type="email" id="emailAddress" name="email" placeholder="Email" class="form-control form-control-lg {{ $errors->first('email') ? 'border-danger' : ''}}" value="{{old('email')}}"/>
                                         <label class="form-label " for="emailAddress">{{ $errors->first('email') }}</label>
                                     </div>
 
