@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('payable_id');
             $table->string('refund_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -107,6 +107,7 @@ class StripeController extends Controller
 
         if ($refund->status == "succeeded") {
             Payment::where('user_id', Auth::id())->update(['refund_id' => $refund->id]);
+            $this->paymentRepositoryContract->deletePayment((['id' => $id]));
             return redirect()->back();
         }
     }

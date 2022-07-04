@@ -3,6 +3,7 @@
 @section('tittle', 'Books Page')
 
 @section('content')
+
     <div class="container">
         <div class="page-inner row">
             @foreach($books as $book)
@@ -18,11 +19,23 @@
                         </div>
                     </div>
                     <div class="box-down">
-                        @if(!($book->payment->isEmpty()))
+                        @if($book->payment->isEmpty())
+                            @if($book->user_id != Auth::id())
+                                <div class="h-bg">
+                                    <div class="h-bg-inner bg-dark"></div>
+                                </div>
+                                <a class="cart" href="{{route('stripe' , $book->id)}}">
+                                    <span class="price">${{ $book->price }}</span>
+                                    <span class="add-to-cart">
+                                          <span class="txt">Buy in one click</span>
+                            </span>
+                                </a>
+                            @endif
+                        @endif
+                        @if($book->payment->isNotEmpty())
                             @foreach($book->payment as $payment)
-
                                 @if($payment->payable_status == "succeeded" && $book->id == $payment->book_id && Auth::id() == $payment->user_id && is_null($payment->refund_id))
-                                    <div class="text-center">
+                                    <div class="text-center ">
                                         <a class="btn btn-success" href="{{route('download', $book->book_pdf)}}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                  fill="currentColor"
@@ -34,29 +47,20 @@
                                             </svg>
                                         </a>
                                         <div class="text-center">
-                                            <a href="/refund/{{$payment->id}}" style="color: #ff2e62 !important;">Refund this book</a>
+                                            <a href="/refund/{{$payment->id}}" style="color: #ff2e62 !important;">Refund
+                                                this book</a>
                                         </div>
                                     </div>
                                 @endif
                             @endforeach
                         @endif
-                        @if($book->user_id != Auth::id() && !is_null($payment->refund_id))
-                            <div class="h-bg">
-                                <div class="h-bg-inner bg-dark"></div>
-                            </div>
-                            <a class="cart" href="{{route('stripe' , $book->id)}}">
-                                <span class="price">${{ $book->price }}</span>
-                                <span class="add-to-cart">
-                                          <span class="txt">Buy in one click</span>
-                            </span>
-                            </a>
-                        @elseif($book->user_id == Auth::id())
-                            <div class="h-bg">
-                                <div class="h-bg-inner bg-dark"></div>
-                            </div>
-                            <a class="cart">
-                                <span class="price">Your book</span>
-                            </a>
+                            @if($book->user_id == Auth::id())
+                                <div class="h-bg">
+                                    <div class="h-bg-inner bg-dark"></div>
+                                </div>
+                                <a class="cart">
+                                    <span class="price">Your book</span>
+                                </a>
                             @endif
                     </div>
                 </div>
@@ -69,3 +73,5 @@
     </div>
 
 @endsection
+
+
