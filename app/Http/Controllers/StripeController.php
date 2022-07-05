@@ -7,7 +7,6 @@ use App\Contracts\PaymentRepositoryContract;
 use App\Contracts\PlanRepositoryContract;
 use App\Contracts\SubscriptionRepositoryContract;
 use App\Contracts\UserRepositoryContract;
-use App\Models\Book;
 use App\Models\Payment;
 use App\Models\Subscription;
 use App\Services\PaymentService;

@@ -27,7 +27,7 @@
                                 <div class="col-md-6 mb-4">
 
                                     <div class="form-outline">
-                                        <input type="text" id="firstName" name="name" placeholder="First Name" class="form-control form-control-lg {{ $errors->first('name') ? 'border-danger' : ''}}" value="{{old('name')}}"/>
+                                        <input type="text" id="firstName" name="name" placeholder="First name" class="form-control form-control-lg {{ $errors->first('name') ? 'border-danger' : ''}}" value="{{old('name')}}"/>
                                         <label class="form-label" for="firstName">{{ $errors->first('name') }}</label>
                                     </div>
 
@@ -35,7 +35,7 @@
                                 <div class="col-md-6 mb-4">
 
                                     <div class="form-outline">
-                                        <input type="text" id="lastName" name="lastName" placeholder="Last Name" class="form-control form-control-lg {{ $errors->first('lastName') ? 'border-danger' : ''}}" value="{{old('lastName')}}"/>
+                                        <input type="text" id="lastName" name="lastName" placeholder="Last name" class="form-control form-control-lg {{ $errors->first('lastName') ? 'border-danger' : ''}}" value="{{old('lastName')}}"/>
                                         <label class="form-label" for="lastName">{{ $errors->first('lastName') }}</label>
                                     </div>
 
@@ -63,7 +63,7 @@
                                 <div class="col-md-6 mb-4 pb-2">
 
                                     <div class="form-outline">
-                                        <input type="password" id="exampleInputPassword2" name="passwordConfirm" placeholder="Password confirm" class="form-control form-control-lg {{ $errors->first('passwordConfirm') ? 'border-danger' : ''}}" />
+                                        <input type="password" id="exampleInputPassword2" name="passwordConfirm" placeholder="Password confirmation" class="form-control form-control-lg {{ $errors->first('passwordConfirm') ? 'border-danger' : ''}}" />
                                         <label class="form-label" for="exampleInputPassword2">{{ $errors->first('passwordConfirm') }}</label>
                                     </div>
 

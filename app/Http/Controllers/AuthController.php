@@ -57,6 +57,7 @@ class AuthController extends Controller
             'email' => $userRegistrationRequest->input('email'),
             'password' => Hash::make($userRegistrationRequest->input('password')),
             'profile_image' => $user_avatar,
+            'email_verified_at' => Carbon::now(),
         ];
         $user = $this->userRepositoryContract->UserRegistrationStore($data);
         $roles = $this->roleRepositoryContract->getAll();

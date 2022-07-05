@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\StripeController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,17 +22,47 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [IndexController::class,'index'])->name('index');
 
-Route::get('/registration', [AuthController::class,'registrationUserPage'])->middleware('guest')->name('RegistrationUserPage');
+Route::prefix('registration')->group(function () {
+    Route::get('/', [AuthController::class,'registrationUserPage'])->middleware('guest')->name('RegistrationUserPage');
 
-Route::post('/registration', [AuthController::class,'registrationUserSubmit'])->name('RegistrationUserSubmit');
+    Route::post('/', [AuthController::class,'registrationUserSubmit'])->name('RegistrationUserSubmit');
+});
 
-Route::get('sign-up/github' , [AuthController::class,'github']);
+Route::prefix('sign-up')->group(function () {
 
-Route::get('sign-up/github/redirect' , [AuthController::class,'githubRedirect']);
+    Route::get('/github' , [AuthController::class,'github']);
 
-Route::get('/login', [AuthController::class,'loginUserPage'])->middleware('guest')->name('LoginUserPage');
+    Route::get('/github/redirect' , [AuthController::class,'githubRedirect']);
 
-Route::post('/login', [AuthController::class,'loginUserSubmit'])->name('LoginUserSubmit');
+});
+
+Route::prefix('login')->group(function () {
+
+    Route::get('/', [AuthController::class,'loginUserPage'])->middleware('guest')->name('LoginUserPage');
+
+    Route::post('/', [AuthController::class,'loginUserSubmit'])->name('LoginUserSubmit');
+
+});
+
+Route::prefix('forgot-password')->group(function () {
+
+    Route::get('/', function () {
+        return view('auth.forgot-password');
+    })->middleware('guest')->name('password.request');
+
+    Route::post('/', [PasswordResetController::class , 'checkAndSend'])->middleware('guest')->name('password.email');
+
+});
+
+Route::prefix('reset-password')->group(function () {
+
+    Route::get('/{token}', function ($token) {
+        return view('auth.reset-password', ['token' => $token]);
+    })->middleware('guest')->name('password.reset');
+
+    Route::post('/', [PasswordResetController::class , 'reset'])->middleware('guest')->name('password.update');
+
+});
 
 Route::get('/verify/{id}', [AuthController::class,'verifyEmail'])->middleware('guest')->name('verifyEmail');
 
@@ -58,5 +89,3 @@ Route::group(['middleware' => ['auth']], function() {
 });
 
 Route::get('{file}', [DownloadController::class, 'download'])->name('download');
-
-

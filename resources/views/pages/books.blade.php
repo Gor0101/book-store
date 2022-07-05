@@ -6,6 +6,7 @@
 
     <div class="container">
         <div class="page-inner row">
+
             @foreach($books as $book)
                 <div class="col-3 offset-1 el-wrapper ms-4">
                     <div class="box-up">
