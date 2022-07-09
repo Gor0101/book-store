@@ -6,6 +6,7 @@ use App\Contracts\BookRepositoryContract;
 use App\Contracts\RoleUserRepositoryContract;
 use App\Contracts\UserRepositoryContract;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
@@ -28,30 +29,29 @@ class AdminDashboardController extends Controller
     public function index()
     {
         $users = $this->userRepositoryContract->getAllUsers();
-        return view('pages.dashboard',compact('users'));
+        return view('pages.dashboard', compact('users'));
     }
 
-    /**
-     * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|Response
-     */
+
     public function deleteUser($id)
     {
-        $this->roleUserRepositoryContract->deleteRoleUser($id);
-        $user = $this->userRepositoryContract->getOneUser(['id' => $id]);
-        if($user->oauth_id){
+        try {
+            DB::beginTransaction();
+            $this->roleUserRepositoryContract->deleteRoleUser($id);
+            $user = $this->userRepositoryContract->getOneUser(['id' => $id]);
+            if (!$user->oauth_id) {
+                unlink(public_path($user->profile_image));
+            }
             $this->userRepositoryContract->deleteUser(['id' => $id]);
+            $this->bookRepositoryContract->destroy($id);
             return response()->json([
-                "success"=>1,
+                "success" => 1,
                 'your user successfully deleted'
             ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back(compact(["error" => $e->getMessage()]));
         }
-        unlink(public_path($user->profile_image));
-        $this->userRepositoryContract->deleteUser(['id' => $id]);
-        $this->bookRepositoryContract->destroy($id);
-        return response()->json([
-            "success"=>1,
-            'your user successfully deleted'
-        ]);
     }
 }

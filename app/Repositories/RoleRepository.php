@@ -15,6 +15,9 @@ class RoleRepository implements RoleRepositoryContract
         $this->role = $role;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection|mixed
+     */
     public function getAll()
     {
         return $this->role::all()->random();

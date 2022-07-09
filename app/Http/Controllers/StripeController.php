@@ -12,6 +12,7 @@ use App\Models\Subscription;
 use App\Services\PaymentService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Session;
 use Stripe;
 
@@ -96,6 +97,8 @@ class StripeController extends Controller
      */
     public function refundPayment($id)
     {
+        try {
+            DB::beginTransaction();
         $stripe = new \Stripe\StripeClient(
             'sk_test_51L8jHaAcc1mBcc9SQyBW6iMyKmSV8mX0u0NcHWrROifm4Smvv4kJV3JIgwBNvVhIwnSnyN8oktEJrnGvpQ8HlqFd00MVj0wXbs'
         );
@@ -107,7 +110,12 @@ class StripeController extends Controller
         if ($refund->status == "succeeded") {
             Payment::where('user_id', Auth::id())->update(['refund_id' => $refund->id]);
             $this->paymentRepositoryContract->deletePayment((['id' => $id]));
+            DB::commit();
             return redirect()->back();
+        }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back(compact(["error" => $e->getMessage()]));
         }
     }
 
@@ -118,6 +126,8 @@ class StripeController extends Controller
      */
     public function refundSubscription($id)
     {
+        try {
+            DB::beginTransaction();
         $date = Carbon::now();
         $stripe = new \Stripe\StripeClient(
             'sk_test_51L8jHaAcc1mBcc9SQyBW6iMyKmSV8mX0u0NcHWrROifm4Smvv4kJV3JIgwBNvVhIwnSnyN8oktEJrnGvpQ8HlqFd00MVj0wXbs'
@@ -132,7 +142,12 @@ class StripeController extends Controller
             Subscription::where('user_id', Auth::id())->update(['cancel_at_period_end' => $date->toDateString()]);
             $user->removeRole('seller');
             $this->subscriptionRepositoryContract->deleteSubscription(['id' => $id]);
+            DB::commit();
             return redirect()->back();
+        }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back(compact(["error" => $e->getMessage()]));
         }
     }
 }

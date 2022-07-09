@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegistrationRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,7 @@ class AuthController extends Controller
     protected RoleRepositoryContract $roleRepositoryContract;
     protected RoleUserRepositoryContract $roleUserRepositoryContract;
 
-    public function __construct(UserRepositoryContract $userRepositoryContract , RoleRepositoryContract $roleRepositoryContract ,  RoleUserRepositoryContract $roleUserRepositoryContract)
+    public function __construct(UserRepositoryContract $userRepositoryContract, RoleRepositoryContract $roleRepositoryContract, RoleUserRepositoryContract $roleUserRepositoryContract)
     {
         $this->userRepositoryContract = $userRepositoryContract;
         $this->roleRepositoryContract = $roleRepositoryContract;
@@ -37,10 +38,14 @@ class AuthController extends Controller
         return view('pages.registration');
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function userProfilePage($id)
     {
         $user = $this->userRepositoryContract->getOneUser(['id' => $id]);
-        return view('pages.profile',compact('user'));
+        return view('pages.profile', compact('user'));
     }
 
     /**
@@ -49,25 +54,32 @@ class AuthController extends Controller
      */
     public function registrationUserSubmit(UserRegistrationRequest $userRegistrationRequest)
     {
-        $image = Storage::putFile('public/profileImages', $userRegistrationRequest->file('profileImage'),'private');
-        $user_avatar = Str::replaceFirst('public', 'storage', $image);
-        $data = [
-            'name' => $userRegistrationRequest->input('name'),
-            'last_name' => $userRegistrationRequest->input('lastName'),
-            'email' => $userRegistrationRequest->input('email'),
-            'password' => Hash::make($userRegistrationRequest->input('password')),
-            'profile_image' => $user_avatar,
-            'email_verified_at' => Carbon::now(),
-        ];
-        $user = $this->userRepositoryContract->UserRegistrationStore($data);
-        $roles = $this->roleRepositoryContract->getAll();
-        $userRoleData = [
-            'user_id' => $user->id,
-            'role_id' => $roles->id,
-        ];
-        $this->roleUserRepositoryContract->store($userRoleData);
-        \Mail::to($user->email)->send(new \App\Mail\OrderShipped($user));
-        return redirect(route('index'));
+        try {
+            DB::beginTransaction();
+            $image = Storage::putFile('public/profileImages', $userRegistrationRequest->file('profileImage'), 'private');
+            $user_avatar = Str::replaceFirst('public', 'storage', $image);
+            $data = [
+                'name' => $userRegistrationRequest->input('name'),
+                'last_name' => $userRegistrationRequest->input('lastName'),
+                'email' => $userRegistrationRequest->input('email'),
+                'password' => Hash::make($userRegistrationRequest->input('password')),
+                'profile_image' => $user_avatar,
+                'email_verified_at' => Carbon::now(),
+            ];
+            $user = $this->userRepositoryContract->UserRegistrationStore($data);
+            $roles = $this->roleRepositoryContract->getAll();
+            $userRoleData = [
+                'user_id' => $user->id,
+                'role_id' => $roles->id,
+            ];
+            $this->roleUserRepositoryContract->store($userRoleData);
+            \Mail::to($user->email)->send(new \App\Mail\OrderShipped($user));
+            DB::commit();
+            return redirect(route('index'));
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back(compact(["error" => $e->getMessage()]));
+        }
     }
 
 
@@ -100,14 +112,15 @@ class AuthController extends Controller
      * @param $id
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function verifyEmail($id){
+    public function verifyEmail($id)
+    {
         $user = $this->userRepositoryContract->updateEmailVerifiedColumn(['id' => $id]);
         $userId = $this->userRepositoryContract->getOneUser(['id' => $id]);
 
-        if($user){
+        if ($user) {
             Auth::loginUsingId($userId->id);
             return redirect(route('index'));
-        }else{
+        } else {
             return redirect()->back();
         }
     }
@@ -121,20 +134,28 @@ class AuthController extends Controller
         return redirect(route('LoginUserPage'));
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function github()
     {
         return Socialite::driver('github')->redirect();
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function githubRedirect()
     {
+        try {
+            DB::beginTransaction();
         $user = Socialite::driver('github')->user();
         $getLoggedUser = $this->userRepositoryContract->getOneUserByOauth(['oauth_id' => $user->id]);
 
-        if($getLoggedUser){
+        if ($getLoggedUser) {
             Auth::loginUsingId($getLoggedUser->id);
             return redirect(route('index'));
-        }else{
+        } else {
             $userGitData = [
                 'name' => $user->name,
                 'last_name' => $user->nickname,
@@ -152,7 +173,12 @@ class AuthController extends Controller
             ];
             $this->roleUserRepositoryContract->store($userRoleData);
             Auth::loginUsingId($createdUser->id);
+            DB::commit();
             return redirect(route('index'));
+        }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back(compact(["error" => $e->getMessage()]));
         }
     }
 

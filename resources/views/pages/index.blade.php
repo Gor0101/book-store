@@ -4,6 +4,35 @@
 @section('tittle', 'BookStore')
 
 @section('content')
+    <div id="preloader">
+        <div class="book">
+            <div class="inner">
+                <div class="left"></div>
+                <div class="middle"></div>
+                <div class="right"></div>
+            </div>
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
 {{--    @dd(Auth::user() && $user->subscriptions->isEmpty())--}}
     @if(Auth::user() && Auth::user()->subscriptions->isEmpty())
             <div id="generic_price_table">

@@ -15,6 +15,9 @@ class GenreRepository implements GenreRepositoryContract
         $this->genre = $genre;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getAllGenres()
     {
         return $this->genre::all();

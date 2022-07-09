@@ -11,6 +11,7 @@ use App\Contracts\UserRepositoryContract;
 use App\Http\Requests\BookCreateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -41,11 +42,7 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->input('search')) {
-            $search = null;
-        } else {
-            $search = $request->input('search');
-        }
+        $search = $request->get('search', null);
         $books = $this->bookRepositoryContract->getAllBooks($search);
         return view('pages.books', ['books' => $books, 'search' => $search]);
     }
@@ -69,26 +66,33 @@ class BookController extends Controller
      */
     public function store(BookCreateRequest $bookCreateRequest)
     {
-        $sub = $this->subscriptionRepositoryContract->getSub(['user_id' => Auth::id()]);
-        $plan = $this->planRepositoryContract->getOnePLan($sub->stripe_plan);
-        if(count(Auth::user()->books) > $plan->limit){
-            return view('pages.index');
+        try {
+            DB::beginTransaction();
+            $sub = $this->subscriptionRepositoryContract->getSub(['user_id' => Auth::id()]);
+            $plan = $this->planRepositoryContract->getOnePLan($sub->stripe_plan);
+            if (count(Auth::user()->books) > $plan->limit) {
+                return view('pages.index');
+            }
+            $image = Storage::putFile('public/booksAvatars', $bookCreateRequest->file('bookAvatar'), 'private');
+            $book_avatar = Str::replaceFirst('public', 'storage', $image);
+            $file = Storage::putFile('public/booksPDF', $bookCreateRequest->file('bookFile'), 'private');
+            $book_pdf = Str::replaceFirst('public', 'storage', $file);
+            $data = [
+                'name' => $bookCreateRequest->input('bookName'),
+                'description' => $bookCreateRequest->input('textArea'),
+                'price' => $bookCreateRequest->input('price'),
+                'user_id' => Auth::id(),
+                'genre_id' => $bookCreateRequest->input('genre'),
+                'book_pdf' => $book_pdf,
+                'book_avatar' => $book_avatar,
+            ];
+            $this->bookRepositoryContract->store($data);
+            DB::commit();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back(compact(["error" => $e->getMessage()]));
         }
-        $image = Storage::putFile('public/booksAvatars', $bookCreateRequest->file('bookAvatar'), 'private');
-        $book_avatar = Str::replaceFirst('public', 'storage', $image);
-        $file = Storage::putFile('public/booksPDF', $bookCreateRequest->file('bookFile'), 'private');
-        $book_pdf = Str::replaceFirst('public', 'storage', $file);
-        $data = [
-            'name' => $bookCreateRequest->input('bookName'),
-            'description' => $bookCreateRequest->input('textArea'),
-            'price' => $bookCreateRequest->input('price'),
-            'user_id' => Auth::id(),
-            'genre_id' => $bookCreateRequest->input('genre'),
-            'book_pdf' => $book_pdf,
-            'book_avatar' => $book_avatar,
-        ];
-        $this->bookRepositoryContract->store($data);
-        return redirect()->back();
     }
 
     /**
@@ -133,7 +137,7 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        return $this->bookRepositoryContract->destroy($id);
+        //
     }
 
 }

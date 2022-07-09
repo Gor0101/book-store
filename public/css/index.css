@@ -169,14 +169,14 @@ body{background-color:#eee;}
     font-family: "Lato",sans-serif;
     font-size: 18px;
     padding: 15px 0;
-    transition: all 0.3s ease-in-out 0s;
+    transition: all 0.1s ease-in-out 0s;
 }
 #generic_price_table .generic_content .generic_feature_list ul li:hover{
-    transition: all 0.3s ease-in-out 0s;
-    -moz-transition: all 0.3s ease-in-out 0s;
-    -ms-transition: all 0.3s ease-in-out 0s;
-    -o-transition: all 0.3s ease-in-out 0s;
-    -webkit-transition: all 0.3s ease-in-out 0s;
+    transition: all 0.1s ease-in-out 0s;
+    -moz-transition: all 0.1s ease-in-out 0s;
+    -ms-transition: all 0.1s ease-in-out 0s;
+    -o-transition: all 0.1s ease-in-out 0s;
+    -webkit-transition: all 0.1s ease-in-out 0s;
 
 }
 #generic_price_table .generic_content .generic_feature_list ul li .fa{
@@ -406,8 +406,22 @@ body{background-color:#eee;}
     text-decoration:none;
 }
 
+.stripe-button-el{
+    background-image: none !important;
+    background-color: #4CAF50 !important;
+}
+
 .stripe-button-el span{
     background: #4CAF50 !important;
+    font-weight: normal !important;
+    letter-spacing: 1px  !important;
+    font-size: 17px !important;
+}
+
+.stripe-button-el span:hover{
+    background-color: white !important;
+    color: #525252 !important;
+    transition: 0.5s;
 }
 
 @import url("https://fonts.googleapis.com/css?family=Fredoka+One");
